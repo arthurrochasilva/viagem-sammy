@@ -1,0 +1,558 @@
+<title>Rolim de Moura a São José</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap">
+
+<style>
+  /* Paleta candy fixa: a pagina e clara sempre, mesmo com o celular no modo escuro. */
+  :root{
+    color-scheme:light;
+
+    --rosa:#F7A8C4;      --rosa-fill:#FFE6F0;   --rosa-txt:#D45C8C;
+    --lilas:#C3AEE8;     --lilas-fill:#EFE8FC;  --lilas-txt:#8467C9;
+    --menta:#A6E0CE;     --menta-fill:#E1F7F1;  --menta-txt:#3A9A83;
+    --azul:#A9CFF0;      --azul-fill:#E5F1FC;   --azul-txt:#4784B5;
+    --creme:#FBE0A4;     --creme-fill:#FFF4DC;  --creme-txt:#B4842B;
+
+    --ink:#5A4A63;
+    --ink-2:#7C6C87;
+    --muted:#A99AB2;
+    --branco:#FFFFFF;
+    --linha:#F0E6F2;
+    --linha-2:#E3D6EA;
+    --sombra:0 3px 0 rgba(198,170,205,.18), 0 14px 28px -18px rgba(160,120,175,.55);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:#FFF4F9;
+    background-image:linear-gradient(170deg,#FFF0F7 0%,#F6F0FE 45%,#EAF7F7 100%);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:"Quicksand","Segoe UI",system-ui,sans-serif;
+    font-weight:600;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 16px 52px}
+  a:focus-visible{outline:2.5px solid var(--rosa-txt);outline-offset:3px;border-radius:8px}
+
+  /* ---------- fitinha de cores ---------- */
+  .fitinha{display:flex;gap:5px;height:10px;margin:0 auto;max-width:250px}
+  .fitinha i{flex:1;border-radius:999px}
+  .fitinha i:nth-child(1){background:var(--rosa)}
+  .fitinha i:nth-child(2){background:var(--creme)}
+  .fitinha i:nth-child(3){background:var(--menta)}
+  .fitinha i:nth-child(4){background:var(--azul)}
+  .fitinha i:nth-child(5){background:var(--lilas)}
+
+  /* ---------- capa ---------- */
+  .capa{padding:30px 0 20px;text-align:center}
+  .capa .fitinha{margin-bottom:20px}
+  .eyebrow{
+    font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--rosa-txt);
+  }
+  .capa h1{
+    font-family:"Baloo 2","Segoe UI",sans-serif;
+    font-weight:700;
+    font-size:clamp(32px,9.5vw,42px);
+    line-height:1.12;
+    margin:8px 0 0;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .capa h1 .coracao{color:var(--rosa);font-size:.8em;vertical-align:.06em}
+
+  .contador{
+    display:flex;align-items:center;justify-content:center;gap:11px;
+    margin-top:20px;padding:15px 20px;
+    background:var(--branco);border-radius:24px;box-shadow:var(--sombra);
+  }
+  .contador b{
+    font-family:"Baloo 2",sans-serif;
+    font-size:32px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;color:var(--rosa-txt);
+  }
+  .contador span{font-size:13px;color:var(--ink-2);line-height:1.3;text-align:left}
+
+  /* ---------- alternador ida / volta ---------- */
+  .alternador{
+    position:relative;display:grid;grid-template-columns:1fr 1fr;
+    margin-top:16px;padding:6px;background:var(--branco);border-radius:999px;box-shadow:var(--sombra);
+  }
+  .alternador .pilula{
+    position:absolute;top:6px;left:6px;bottom:6px;width:calc(50% - 6px);
+    background:var(--rosa-fill);border-radius:999px;
+    transition:transform .3s cubic-bezier(.5,1.4,.5,1);
+  }
+  .alternador.na-volta .pilula{transform:translateX(100%)}
+  .alternador .opcao{
+    position:relative;z-index:1;appearance:none;border:0;background:none;cursor:pointer;
+    font-family:"Baloo 2",sans-serif;font-size:17px;font-weight:700;
+    padding:9px 0;border-radius:999px;color:var(--muted);
+    transition:color .22s ease;
+  }
+  .alternador .opcao[aria-selected="true"]{color:var(--rosa-txt)}
+  .alternador .opcao:focus-visible{outline:2.5px solid var(--rosa-txt);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){
+    .alternador .pilula{transition:none}
+  }
+
+  /* ---------- fases ---------- */
+  .fase{margin-top:26px}
+  .fase-cab{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .fase-cab h2{
+    font-family:"Baloo 2",sans-serif;font-size:23px;font-weight:700;margin:0;color:var(--ink);
+  }
+  .fase-cab .risco{flex:1;height:3px;border-radius:3px;background:var(--linha-2)}
+  .fase-cab .datas{
+    font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ---------- trilho ---------- */
+  .trilho{position:relative;padding-left:28px}
+  .trilho::before{
+    content:"";position:absolute;left:6px;top:12px;bottom:12px;width:3px;
+    background:var(--linha-2);border-radius:3px;
+  }
+  /* cada parada recebe uma cor da paleta, alternando ao longo do trilho */
+  .parada{
+    position:relative;margin-bottom:14px;
+    --c:var(--rosa); --c-fill:var(--rosa-fill); --c-txt:var(--rosa-txt);
+  }
+  .parada.cor-creme{--c:var(--creme); --c-fill:var(--creme-fill); --c-txt:var(--creme-txt)}
+  .parada.cor-menta{--c:var(--menta); --c-fill:var(--menta-fill); --c-txt:var(--menta-txt)}
+  .parada.cor-azul {--c:var(--azul);  --c-fill:var(--azul-fill);  --c-txt:var(--azul-txt)}
+  .parada.cor-lilas{--c:var(--lilas); --c-fill:var(--lilas-fill); --c-txt:var(--lilas-txt)}
+  .parada::before{
+    content:"";position:absolute;left:-28px;top:20px;width:15px;height:15px;border-radius:50%;
+    background:var(--c);border:3px solid var(--branco);
+    box-shadow:0 0 0 2px var(--c);
+  }
+
+  /* ---------- cartao ---------- */
+  .cartao{background:var(--branco);border-radius:26px;padding:18px;box-shadow:var(--sombra)}
+  .cartao-topo{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:15px}
+  .selo{
+    font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    padding:6px 12px;border-radius:999px;
+  }
+  .selo.tipo{background:var(--c-fill);color:var(--c-txt)}
+  .selo.fraco{background:#F4EFF7;color:#8B7C97}
+
+  .percurso{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:10px}
+  .ponto .hora{
+    font-family:"Baloo 2",sans-serif;
+    font-size:33px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;display:block;
+  }
+  .ponto .hora.amor{color:var(--rosa);font-size:29px}
+  .ponto .lugar{display:block;margin-top:6px;font-size:13px;line-height:1.3;color:var(--ink-2);font-weight:700}
+  .ponto .dia{
+    display:block;margin-top:5px;font-size:10.5px;color:var(--muted);font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;font-variant-numeric:tabular-nums;
+  }
+  .ponto.fim{text-align:right}
+  .meio{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:9px}
+  .meio .traco{width:34px;height:3px;background:var(--linha-2);border-radius:3px;position:relative}
+  .meio .traco::after{
+    content:"";position:absolute;right:-2px;top:-3px;width:9px;height:9px;border-radius:50%;
+    background:var(--linha-2);
+  }
+  .meio .dur{font-size:10.5px;font-weight:700;color:var(--muted);white-space:nowrap}
+
+  .rodape-cartao{
+    display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+    margin-top:16px;padding-top:15px;border-top:3px dotted var(--linha);
+  }
+  .poltrona{display:flex;align-items:center;gap:9px;background:var(--c-fill);color:var(--c-txt);padding:8px 14px;border-radius:16px}
+  .poltrona small{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;line-height:1.2}
+  .poltrona strong{font-family:"Baloo 2",sans-serif;font-size:24px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+  .info{font-size:12px;font-weight:600;color:var(--muted);line-height:1.5}
+  .info b{color:var(--ink-2);font-weight:700}
+
+  /* ---------- avisos e hotel ---------- */
+  .aviso-cartao{
+    background:var(--branco);border-radius:26px;padding:16px 18px;
+    display:flex;gap:13px;align-items:flex-start;box-shadow:var(--sombra);
+  }
+  .aviso-hora{
+    font-family:"Baloo 2",sans-serif;
+    font-size:23px;font-weight:700;color:var(--c-txt);line-height:1.1;
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .aviso-txt{font-size:13.5px;line-height:1.5;color:var(--ink)}
+  .aviso-txt b{font-weight:700}
+  .aviso-txt em{
+    display:block;font-style:normal;color:var(--c-txt);font-weight:700;
+    font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;
+  }
+
+  .hotel-cartao{background:var(--branco);border-radius:26px;padding:17px 18px;box-shadow:var(--sombra)}
+  .hotel-cartao .rotulo{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--c-txt)}
+  .hotel-cartao h3{font-family:"Baloo 2",sans-serif;font-size:23px;font-weight:700;margin:6px 0 6px;color:var(--ink)}
+  .hotel-cartao p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-2)}
+  .hotel-cartao a{
+    display:inline-block;margin-top:13px;padding:8px 15px;border-radius:999px;
+    background:var(--c-fill);color:var(--c-txt);text-decoration:none;
+    font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  }
+
+  /* ---------- desfecho ---------- */
+  footer{margin-top:34px;text-align:center}
+  footer .cartao-amor{
+    background:var(--branco);border-radius:28px;padding:26px 22px;box-shadow:var(--sombra);
+  }
+  footer .coracoes{font-size:17px;letter-spacing:5px;color:var(--rosa)}
+  footer p{
+    font-family:"Baloo 2",sans-serif;
+    font-size:19px;line-height:1.4;font-weight:600;margin:12px 0 0;color:var(--ink);text-wrap:balance;
+  }
+  footer small{
+    display:block;margin-top:14px;font-size:10.5px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  footer .fitinha{margin-top:22px}
+
+  @media (max-width:359px){
+    .ponto .hora{font-size:28px}
+    .percurso{gap:6px}
+    .meio .traco{width:20px}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .capa,.parada{animation:sobe .55s ease-out both}
+    .trilho .parada:nth-child(2){animation-delay:.05s}
+    .trilho .parada:nth-child(3){animation-delay:.1s}
+    .trilho .parada:nth-child(4){animation-delay:.15s}
+    .trilho .parada:nth-child(5){animation-delay:.2s}
+    @keyframes sobe{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="capa">
+    <div class="fitinha"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="eyebrow">16 &ndash; 31 de dezembro</div>
+    <h1>Rolim de Moura <span class="coracao">&#10084;</span> São José dos Campos</h1>
+    <div class="contador">
+      <b id="dias">&mdash;</b>
+      <span id="dias-txt">para a saída</span>
+    </div>
+
+    <div class="alternador" id="alternador" role="tablist" aria-label="Trecho da viagem">
+      <span class="pilula" aria-hidden="true"></span>
+      <button class="opcao" id="aba-ida" role="tab" aria-selected="true" aria-controls="painel-ida" type="button">Ida</button>
+      <button class="opcao" id="aba-volta" role="tab" aria-selected="false" aria-controls="painel-volta" type="button">Volta</button>
+    </div>
+  </header>
+
+  <!-- ============ IDA ============ -->
+  <section class="fase" id="painel-ida" role="tabpanel" aria-labelledby="aba-ida">
+    <div class="fase-cab">
+      <h2>Ida</h2>
+      <div class="risco"></div>
+      <div class="datas">16&ndash;17 dez</div>
+    </div>
+
+    <div class="trilho">
+
+      <div class="parada aviso">
+        <div class="aviso-cartao">
+          <div class="aviso-hora">04:00</div>
+          <div class="aviso-txt">
+            <em>Qua, 16 dez &middot; acordar cedo</em>
+            Sair de <b>Rolim de Moura&#8209;RO</b> rumo a Pimenta Bueno, para chegar com folga antes das 05:45.
+          </div>
+        </div>
+      </div>
+
+      <div class="parada cor-creme">
+        <div class="cartao">
+          <div class="cartao-topo">
+            <span class="selo tipo">Ônibus</span>
+          </div>
+          <div class="percurso">
+            <div class="ponto">
+              <span class="hora">05:45</span>
+              <span class="lugar">Pimenta Bueno&#8209;RO</span>
+              <span class="dia">qua, 16 dez</span>
+            </div>
+            <div class="meio">
+              <div class="traco"></div>
+              <div class="dur">15h</div>
+            </div>
+            <div class="ponto fim">
+              <span class="hora">20:45</span>
+              <span class="lugar">Cuiabá&#8209;MT</span>
+              <span class="dia">qua, 16 dez</span>
+            </div>
+          </div>
+          <div class="rodape-cartao">
+            <div class="poltrona">
+              <small>Poltrona</small>
+              <strong>26</strong>
+            </div>
+            <div class="info">Dia inteiro de estrada &middot; <b>15 horas</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="parada cor-menta hotel">
+        <div class="hotel-cartao">
+          <div class="rotulo">Noite de 16 para 17</div>
+          <h3>Hotel Express</h3>
+          <p>Av. João Ponce de Arruda, 784 &mdash; Jardim Aeroporto<br>Várzea Grande &middot; MT</p>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Express+Av.+Jo%C3%A3o+Ponce+de+Arruda+784+Jardim+Aeroporto+V%C3%A1rzea+Grande+MT" target="_blank" rel="noopener">Abrir no mapa</a>
+        </div>
+      </div>
+
+      <div class="parada cor-azul aviso">
+        <div class="aviso-cartao">
+          <div class="aviso-hora">03:00</div>
+          <div class="aviso-txt">
+            <em>Qui, 17 dez</em>
+            Sair do <b>Hotel Express</b> em direção ao aeroporto Marechal Rondon. O próprio hotel leva até lá <b>de graça</b> &mdash; é só combinar o horário com eles na recepção.
+          </div>
+        </div>
+      </div>
+
+      <div class="parada cor-lilas voo">
+        <div class="cartao">
+          <div class="cartao-topo">
+            <span class="selo tipo">Voo LA 3567</span>
+            <span class="selo fraco">Latam</span>
+          </div>
+          <div class="percurso">
+            <div class="ponto">
+              <span class="hora">05:10</span>
+              <span class="lugar">Cuiabá &middot; Aeroporto</span>
+              <span class="dia">qui, 17 dez</span>
+            </div>
+            <div class="meio">
+              <div class="traco"></div>
+              <div class="dur">3h15</div>
+            </div>
+            <div class="ponto fim">
+              <span class="hora">08:25</span>
+              <span class="lugar">Guarulhos &middot; Aeroporto</span>
+              <span class="dia">qui, 17 dez</span>
+            </div>
+          </div>
+          <div class="rodape-cartao">
+            <div class="info">Desembarque em Guarulhos às <b>08:25</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="parada carro">
+        <div class="cartao">
+          <div class="cartao-topo">
+            <span class="selo tipo">De carro</span>
+          </div>
+          <div class="percurso">
+            <div class="ponto">
+              <span class="hora">08:25</span>
+              <span class="lugar">Guarulhos &middot; Aeroporto</span>
+              <span class="dia">qui, 17 dez</span>
+            </div>
+            <div class="meio">
+              <div class="traco"></div>
+              <div class="dur">~1h30</div>
+            </div>
+            <div class="ponto fim">
+              <span class="hora amor">&#10084;</span>
+              <span class="lugar">São José dos Campos</span>
+              <span class="dia">enfim juntos</span>
+            </div>
+          </div>
+          <div class="rodape-cartao">
+            <div class="info">Te busco no aeroporto e seguimos de carro</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ VOLTA ============ -->
+  <section class="fase" id="painel-volta" role="tabpanel" aria-labelledby="aba-volta" hidden>
+    <div class="fase-cab">
+      <h2>Volta</h2>
+      <div class="risco"></div>
+      <div class="datas">30&ndash;31 dez</div>
+    </div>
+
+    <div class="trilho">
+
+      <div class="parada carro">
+        <div class="cartao">
+          <div class="cartao-topo">
+            <span class="selo tipo">De carro</span>
+          </div>
+          <div class="percurso">
+            <div class="ponto">
+              <span class="hora amor">&#10084;</span>
+              <span class="lugar">São José dos Campos</span>
+              <span class="dia">qua, 30 dez</span>
+            </div>
+            <div class="meio">
+              <div class="traco"></div>
+              <div class="dur">~1h30</div>
+            </div>
+            <div class="ponto fim">
+              <span class="hora">14:05</span>
+              <span class="lugar">Guarulhos &middot; Aeroporto</span>
+              <span class="dia">qua, 30 dez</span>
+            </div>
+          </div>
+          <div class="rodape-cartao">
+            <div class="info">Chegar ao aeroporto <b>2h antes</b> do voo das 16:05</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="parada cor-creme voo">
+        <div class="cartao">
+          <div class="cartao-topo">
+            <span class="selo tipo">Voo LA 3268</span>
+            <span class="selo fraco">Latam</span>
+          </div>
+          <div class="percurso">
+            <div class="ponto">
+              <span class="hora">16:05</span>
+              <span class="lugar">Guarulhos &middot; Aeroporto</span>
+              <span class="dia">qua, 30 dez</span>
+            </div>
+            <div class="meio">
+              <div class="traco"></div>
+              <div class="dur">3h20</div>
+            </div>
+            <div class="ponto fim">
+              <span class="hora">17:25</span>
+              <span class="lugar">Cuiabá &middot; Aeroporto</span>
+              <span class="dia">qua, 30 dez</span>
+            </div>
+          </div>
+          <div class="rodape-cartao">
+            <div class="info">Do pouso até o ônibus: <b>2h05</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="parada cor-menta">
+        <div class="cartao">
+          <div class="cartao-topo">
+            <span class="selo tipo">Ônibus</span>
+          </div>
+          <div class="percurso">
+            <div class="ponto">
+              <span class="hora">19:30</span>
+              <span class="lugar">Cuiabá&#8209;MT</span>
+              <span class="dia">qua, 30 dez</span>
+            </div>
+            <div class="meio">
+              <div class="traco"></div>
+              <div class="dur">14h40</div>
+            </div>
+            <div class="ponto fim">
+              <span class="hora">10:10</span>
+              <span class="lugar">Pimenta Bueno&#8209;RO</span>
+              <span class="dia">qui, 31 dez</span>
+            </div>
+          </div>
+          <div class="rodape-cartao">
+            <div class="poltrona">
+              <small>Poltrona</small>
+              <strong>48</strong>
+            </div>
+            <div class="info">Viagem noturna &middot; chega no <b>dia 31</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="parada cor-azul aviso">
+        <div class="aviso-cartao">
+          <div class="aviso-hora">10:10</div>
+          <div class="aviso-txt">
+            <em>Qui, 31 dez &middot; desembarque</em>
+            Chegada em <b>Pimenta Bueno&#8209;RO</b>. Seu pai te busca aqui e te leva até Rolim de Moura.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="cartao-amor" id="recado-ida">
+      <div class="coracoes">&#10084; &#10084; &#10084;</div>
+      <p>Viaja com calma, meu amor. Do outro lado dessas horas todas estou eu, esperando você.</p>
+      <small>Feito com amor &middot; setembro de 2026</small>
+    </div>
+    <div class="cartao-amor" id="recado-volta" hidden>
+      <div class="coracoes">&#10084; &#10084; &#10084;</div>
+      <p>Volta com cuidado, meu amor. Dessa vez não estou no fim do caminho, mas já estou contando os dias pra gente morar junto.</p>
+      <small>Feito com amor &middot; setembro de 2026</small>
+    </div>
+    <div class="fitinha"><i></i><i></i><i></i><i></i><i></i></div>
+  </footer>
+</div>
+
+<script>
+  (function(){
+    var partida = new Date(2026, 11, 16, 4, 0, 0);
+    var fim = new Date(2026, 11, 31, 12, 0, 0);
+    var agora = new Date();
+    var dias = Math.ceil((partida - agora) / 86400000);
+    var n = document.getElementById('dias');
+    var t = document.getElementById('dias-txt');
+    if (dias > 1) {
+      n.textContent = dias;
+      t.textContent = 'dias até a saída de Rolim de Moura';
+    } else if (dias === 1) {
+      n.textContent = '1';
+      t.textContent = 'dia até a saída de Rolim de Moura';
+    } else if (dias === 0) {
+      n.textContent = 'Hoje';
+      t.textContent = 'é o dia da viagem';
+    } else if (agora < fim) {
+      n.textContent = 'Em rota';
+      t.textContent = 'viagem em andamento';
+    } else {
+      n.textContent = 'Fim';
+      t.textContent = 'viagem concluída';
+    }
+
+    /* ---- alternador ida / volta ---- */
+    var alternador = document.getElementById('alternador');
+    var abas = {
+      ida: document.getElementById('aba-ida'),
+      volta: document.getElementById('aba-volta')
+    };
+    var paineis = {
+      ida: document.getElementById('painel-ida'),
+      volta: document.getElementById('painel-volta')
+    };
+    var recados = {
+      ida: document.getElementById('recado-ida'),
+      volta: document.getElementById('recado-volta')
+    };
+
+    function mostrar(trecho){
+      var outro = trecho === 'ida' ? 'volta' : 'ida';
+      abas[trecho].setAttribute('aria-selected', 'true');
+      abas[outro].setAttribute('aria-selected', 'false');
+      paineis[trecho].hidden = false;
+      paineis[outro].hidden = true;
+      recados[trecho].hidden = false;
+      recados[outro].hidden = true;
+      alternador.classList.toggle('na-volta', trecho === 'volta');
+    }
+
+    abas.ida.addEventListener('click', function(){ mostrar('ida'); });
+    abas.volta.addEventListener('click', function(){ mostrar('volta'); });
+
+    /* depois que ela chegar em São José, a volta passa a ser a aba aberta */
+    var chegada = new Date(2026, 11, 17, 12, 0, 0);
+    if (agora >= chegada && agora < fim) { mostrar('volta'); }
+  })();
+</script>
