@@ -657,8 +657,7 @@
     var lupaProx = document.getElementById('lupa-prox');
     var fotos = document.querySelectorAll('.fotos a');
     var indice = 0;
-    var arrastou = false;
-    var fimDoArrasto = 0;
+    var fechadoEm = 0, fechadoX = 0, fechadoY = 0;
 
     /* um pontinho por foto, para ela ver que tem mais de uma */
     var pontos = [];
@@ -725,14 +724,6 @@
       fecharFoto();
     });
 
-    lupa.addEventListener('click', function(){
-      /* ignora so o clique fantasma que o navegador dispara logo apos um arrasto.
-         o guarda expira sozinho, entao o toque seguinte fecha de primeira mesmo
-         que esse clique fantasma nunca chegue. */
-      if (Date.now() - fimDoArrasto < 350) return;
-      fecharFoto();
-    });
-
     document.addEventListener('keydown', function(e){
       if (lupa.hidden) return;
       if (e.key === 'Escape' || e.key === 'Esc') fecharFoto();
@@ -740,24 +731,18 @@
       else if (e.key === 'ArrowLeft') irPara(-1);
     });
 
-    /* arrastar para o lado troca de foto.
-       usa pointer events: com touch-action:none o navegador nao cancela o gesto no meio,
-       que era o que fazia o arrasto falhar no celular. */
+    /* O dedo levantando decide tudo, num evento so: arrastou para o lado troca
+       de foto, qualquer outro toque fecha. Nao dependemos mais do evento click,
+       que no celular vem atrasado, as vezes nem vem, e era o que obrigava a
+       tocar duas vezes depois de um arrasto. */
     var arrastoX = 0, arrastoY = 0, seguindo = false;
 
     lupa.addEventListener('pointerdown', function(e){
       if (!e.isPrimary) return;
-      if (e.target.closest && e.target.closest('button')) return;   /* botao cuida de si */
+      if (e.target.closest && e.target.closest('button')) { seguindo = false; return; }
       seguindo = true;
-      arrastou = false;
-      fimDoArrasto = 0;          /* gesto novo: o arrasto anterior nao conta mais */
       arrastoX = e.clientX;
       arrastoY = e.clientY;
-    });
-
-    lupa.addEventListener('pointermove', function(e){
-      if (!seguindo || !e.isPrimary) return;
-      if (Math.abs(e.clientX - arrastoX) > 10) arrastou = true;
     });
 
     lupa.addEventListener('pointerup', function(e){
@@ -766,13 +751,28 @@
       var dx = e.clientX - arrastoX;
       var dy = e.clientY - arrastoY;
       if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
-        arrastou = true;
-        irPara(dx < 0 ? 1 : -1);
+        irPara(dx < 0 ? 1 : -1);      /* arrastou para o lado: troca de foto */
+      } else {
+        fechadoEm = Date.now();       /* guarda onde fechou, para o clique fantasma */
+        fechadoX = e.clientX;
+        fechadoY = e.clientY;
+        fecharFoto();                 /* qualquer outro toque: fecha */
       }
-      if (arrastou) fimDoArrasto = Date.now();
     });
 
     lupa.addEventListener('pointercancel', function(){ seguindo = false; });
+
+    /* Fechando no pointerup, o navegador ainda dispara um click logo depois, nas
+       mesmas coordenadas, mas ja com a pagina por baixo. Sem isso o clique cairia
+       numa miniatura e reabriria a foto. */
+    document.addEventListener('click', function(e){
+      if (Date.now() - fechadoEm < 400 &&
+          Math.abs(e.clientX - fechadoX) < 24 &&
+          Math.abs(e.clientY - fechadoY) < 24) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }, true);
 
     /* depois que ela chegar em São José, a volta passa a ser a aba aberta */
     var chegada = new Date(2026, 11, 17, 12, 0, 0);
