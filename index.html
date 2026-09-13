@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFF0F7">
-<title>Rolim de Moura a São José</title>
+<title>Viagem Sammy &#10084;</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap">
@@ -219,9 +219,21 @@
   }
   .lupa[hidden]{display:none}
   .lupa img{
-    max-width:100%;max-height:80vh;display:block;border-radius:20px;
+    max-width:100%;max-height:74vh;display:block;border-radius:20px;
     box-shadow:0 20px 45px -14px rgba(70,50,80,.7);
+    -webkit-user-select:none;user-select:none;-webkit-user-drag:none;
+    touch-action:pan-y;
   }
+  /* pontinhos: mostram em qual das fotos ela esta */
+  .lupa .pontinhos{
+    position:absolute;left:0;right:0;bottom:26px;
+    display:flex;justify-content:center;gap:8px;pointer-events:none;
+  }
+  .lupa .pontinhos i{
+    width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);
+    transition:background .2s ease,transform .2s ease;
+  }
+  .lupa .pontinhos i.agora{background:var(--branco);transform:scale(1.15)}
   .lupa .fechar{
     position:absolute;top:16px;right:16px;width:40px;height:40px;
     appearance:none;border:0;border-radius:50%;cursor:pointer;
@@ -265,7 +277,13 @@
     .trilho .parada:nth-child(5){animation-delay:.2s}
     @keyframes sobe{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
     .lupa img{animation:cresce .24s cubic-bezier(.3,1.3,.6,1) both}
+    .lupa img.veio-da-direita{animation:desliza-esq .26s ease-out both}
+    .lupa img.veio-da-esquerda{animation:desliza-dir .26s ease-out both}
+    .lupa img.esbarrou{animation:esbarra .26s ease-out both}
     @keyframes cresce{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+    @keyframes desliza-esq{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
+    @keyframes desliza-dir{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}
+    @keyframes esbarra{0%{transform:none}35%{transform:translateX(var(--nudge,10px))}100%{transform:none}}
   }
 </style>
 </head>
@@ -276,7 +294,7 @@
   <header class="capa">
     <div class="fitinha"><i></i><i></i><i></i><i></i><i></i></div>
     <div class="eyebrow">16 &ndash; 31 de dezembro</div>
-    <h1>Rolim de Moura <span class="coracao">&#10084;</span> São José dos Campos</h1>
+    <h1>Viagem Sammy <span class="coracao">&#10084;</span></h1>
     <div class="contador">
       <b id="dias">&mdash;</b>
       <span id="dias-txt">para a saída</span>
@@ -467,9 +485,6 @@
               <span class="dia">qua, 30 dez</span>
             </div>
           </div>
-          <div class="rodape-cartao">
-            <div class="info">Chegar ao aeroporto <b>2h antes</b> do voo das 16:05</div>
-          </div>
         </div>
       </div>
 
@@ -527,7 +542,6 @@
               <small>Poltrona</small>
               <strong>16</strong>
             </div>
-            <div class="info">Viagem noturna &middot; chega no <b>dia 31</b></div>
           </div>
         </div>
       </div>
@@ -561,6 +575,7 @@
 <div class="lupa" id="lupa" role="dialog" aria-modal="true" aria-label="Foto do hotel" hidden>
   <button class="fechar" id="lupa-fechar" type="button" aria-label="Fechar foto">&times;</button>
   <img id="lupa-img" src="" alt="">
+  <div class="pontinhos" id="lupa-pontos" aria-hidden="true"></div>
 </div>
 
 <script>
@@ -617,17 +632,53 @@
     abas.ida.addEventListener('click', function(){ mostrar('ida'); });
     abas.volta.addEventListener('click', function(){ mostrar('volta'); });
 
-    /* ---- fotos do hotel: tocar para ampliar ---- */
+    /* ---- fotos do hotel: tocar para ampliar, arrastar para trocar ---- */
     var lupa = document.getElementById('lupa');
     var lupaImg = document.getElementById('lupa-img');
     var lupaFechar = document.getElementById('lupa-fechar');
+    var lupaPontos = document.getElementById('lupa-pontos');
     var fotos = document.querySelectorAll('.fotos a');
-    var fotoAberta = null;
+    var indice = 0;
+    var arrastou = false;
 
-    function abrirFoto(link){
-      fotoAberta = link;
+    /* um pontinho por foto, para ela ver que tem mais de uma */
+    var pontos = [];
+    Array.prototype.forEach.call(fotos, function(){
+      var i = document.createElement('i');
+      lupaPontos.appendChild(i);
+      pontos.push(i);
+    });
+
+    function animar(classe){
+      lupaImg.classList.remove('cresce', 'veio-da-direita', 'veio-da-esquerda', 'esbarrou');
+      void lupaImg.offsetWidth;               /* reinicia a animacao */
+      if (classe) lupaImg.classList.add(classe);
+    }
+
+    function mostrarFoto(i, passo){
+      indice = i;
+      var link = fotos[i];
       lupaImg.src = link.getAttribute('href');
       lupaImg.alt = link.querySelector('img').alt;
+      for (var k = 0; k < pontos.length; k++) {
+        pontos[k].className = (k === i ? 'agora' : '');
+      }
+      if (passo) animar(passo > 0 ? 'veio-da-direita' : 'veio-da-esquerda');
+    }
+
+    function irPara(passo){
+      var novo = indice + passo;
+      if (novo < 0 || novo >= fotos.length) {   /* nao tem foto desse lado */
+        lupaImg.style.setProperty('--nudge', (passo > 0 ? '-10px' : '10px'));
+        animar('esbarrou');
+        return;
+      }
+      mostrarFoto(novo, passo);
+    }
+
+    function abrirFoto(i){
+      mostrarFoto(i, 0);
+      animar(null);
       lupa.hidden = false;
       document.body.style.overflow = 'hidden';
       lupaFechar.focus();
@@ -637,16 +688,54 @@
       lupa.hidden = true;
       lupaImg.removeAttribute('src');
       document.body.style.overflow = '';
-      if (fotoAberta) { fotoAberta.focus(); fotoAberta = null; }
+      if (fotos[indice]) fotos[indice].focus();
     }
 
-    Array.prototype.forEach.call(fotos, function(link){
-      link.addEventListener('click', function(e){ e.preventDefault(); abrirFoto(link); });
+    Array.prototype.forEach.call(fotos, function(link, i){
+      link.addEventListener('click', function(e){ e.preventDefault(); abrirFoto(i); });
     });
-    lupa.addEventListener('click', fecharFoto);
+
+    /* o X fecha sempre, mesmo logo depois de um arrasto */
+    lupaFechar.addEventListener('click', function(e){
+      e.stopPropagation();
+      fecharFoto();
+    });
+
+    lupa.addEventListener('click', function(){
+      if (arrastou) { arrastou = false; return; }   /* foi arrasto, nao toque */
+      fecharFoto();
+    });
+
     document.addEventListener('keydown', function(e){
-      if (!lupa.hidden && (e.key === 'Escape' || e.key === 'Esc')) fecharFoto();
+      if (lupa.hidden) return;
+      if (e.key === 'Escape' || e.key === 'Esc') fecharFoto();
+      else if (e.key === 'ArrowRight') irPara(1);
+      else if (e.key === 'ArrowLeft') irPara(-1);
     });
+
+    /* arrastar para o lado troca de foto */
+    var toqueX = 0, toqueY = 0;
+    lupa.addEventListener('touchstart', function(e){
+      if (e.touches.length !== 1) return;
+      toqueX = e.touches[0].clientX;
+      toqueY = e.touches[0].clientY;
+      arrastou = false;
+    }, { passive: true });
+
+    lupa.addEventListener('touchmove', function(e){
+      if (e.touches.length !== 1) return;
+      if (Math.abs(e.touches[0].clientX - toqueX) > 10) arrastou = true;
+    }, { passive: true });
+
+    lupa.addEventListener('touchend', function(e){
+      if (e.changedTouches.length !== 1) return;
+      var dx = e.changedTouches[0].clientX - toqueX;
+      var dy = e.changedTouches[0].clientY - toqueY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        arrastou = true;
+        irPara(dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
 
     /* depois que ela chegar em São José, a volta passa a ser a aba aberta */
     var chegada = new Date(2026, 11, 17, 12, 0, 0);
