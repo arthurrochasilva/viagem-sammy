@@ -658,6 +658,7 @@
     var fotos = document.querySelectorAll('.fotos a');
     var indice = 0;
     var arrastou = false;
+    var fimDoArrasto = 0;
 
     /* um pontinho por foto, para ela ver que tem mais de uma */
     var pontos = [];
@@ -725,7 +726,10 @@
     });
 
     lupa.addEventListener('click', function(){
-      if (arrastou) { arrastou = false; return; }   /* foi arrasto, nao toque */
+      /* ignora so o clique fantasma que o navegador dispara logo apos um arrasto.
+         o guarda expira sozinho, entao o toque seguinte fecha de primeira mesmo
+         que esse clique fantasma nunca chegue. */
+      if (Date.now() - fimDoArrasto < 350) return;
       fecharFoto();
     });
 
@@ -746,6 +750,7 @@
       if (e.target.closest && e.target.closest('button')) return;   /* botao cuida de si */
       seguindo = true;
       arrastou = false;
+      fimDoArrasto = 0;          /* gesto novo: o arrasto anterior nao conta mais */
       arrastoX = e.clientX;
       arrastoY = e.clientY;
     });
@@ -764,6 +769,7 @@
         arrastou = true;
         irPara(dx < 0 ? 1 : -1);
       }
+      if (arrastou) fimDoArrasto = Date.now();
     });
 
     lupa.addEventListener('pointercancel', function(){ seguindo = false; });
