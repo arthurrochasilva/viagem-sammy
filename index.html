@@ -213,7 +213,7 @@
   /* lupa: a foto aberta em cima de tudo */
   .lupa{
     position:fixed;inset:0;z-index:50;
-    display:flex;align-items:center;justify-content:center;padding:18px;
+    display:flex;align-items:center;justify-content:center;padding:18px 18px 78px;
     background:rgba(74,58,82,.84);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
     cursor:zoom-out;
     touch-action:none;          /* o navegador nao rouba o arrasto para o lado */
@@ -221,15 +221,16 @@
   }
   .lupa[hidden]{display:none}
   .lupa img{
-    max-width:100%;max-height:74vh;display:block;border-radius:20px;
+    max-width:100%;max-height:70vh;display:block;border-radius:20px;
     box-shadow:0 20px 45px -14px rgba(70,50,80,.7);
     -webkit-user-select:none;user-select:none;-webkit-user-drag:none;pointer-events:none;
   }
-  /* pontinhos: mostram em qual das fotos ela esta */
-  .lupa .pontinhos{
-    position:absolute;left:0;right:0;bottom:26px;
-    display:flex;justify-content:center;gap:8px;pointer-events:none;
+  /* barra de baixo: setas e pontinhos, longe da foto */
+  .lupa .barra{
+    position:absolute;left:0;right:0;bottom:20px;
+    display:flex;align-items:center;justify-content:center;gap:15px;
   }
+  .lupa .pontinhos{display:flex;gap:8px;pointer-events:none}
   .lupa .pontinhos i{
     width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);
     transition:background .2s ease,transform .2s ease;
@@ -245,17 +246,14 @@
   .lupa .fechar:focus-visible,
   .lupa .seta:focus-visible{outline:2.5px solid var(--branco);outline-offset:3px}
   .lupa .seta{
-    position:absolute;top:50%;transform:translateY(-50%);
-    width:38px;height:38px;
+    width:36px;height:36px;flex:none;
     appearance:none;border:0;border-radius:50%;cursor:pointer;
     background:rgba(255,255,255,.92);color:var(--ink);
-    font-family:"Baloo 2",sans-serif;font-size:21px;font-weight:700;line-height:1;
+    font-family:"Baloo 2",sans-serif;font-size:20px;font-weight:700;line-height:1;
     box-shadow:var(--sombra);
     transition:opacity .2s ease;
   }
-  .lupa .seta.ant{left:10px}
-  .lupa .seta.prox{right:10px}
-  .lupa .seta[disabled]{opacity:0;pointer-events:none}
+  .lupa .seta[disabled]{opacity:.28;pointer-events:none}
 
   /* numero da reserva */
   .reserva{
@@ -589,9 +587,11 @@
 <div class="lupa" id="lupa" role="dialog" aria-modal="true" aria-label="Foto do hotel" hidden>
   <button class="fechar" id="lupa-fechar" type="button" aria-label="Fechar foto">&times;</button>
   <img id="lupa-img" src="" alt="">
-  <button class="seta ant" id="lupa-ant" type="button" aria-label="Foto anterior">&#8249;</button>
-  <button class="seta prox" id="lupa-prox" type="button" aria-label="Próxima foto">&#8250;</button>
-  <div class="pontinhos" id="lupa-pontos" aria-hidden="true"></div>
+  <div class="barra">
+    <button class="seta" id="lupa-ant" type="button" aria-label="Foto anterior">&#8249;</button>
+    <div class="pontinhos" id="lupa-pontos" aria-hidden="true"></div>
+    <button class="seta" id="lupa-prox" type="button" aria-label="Próxima foto">&#8250;</button>
+  </div>
 </div>
 
 <script>
