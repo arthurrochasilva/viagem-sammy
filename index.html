@@ -198,11 +198,48 @@
   .hotel-cartao .rotulo{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--c-txt)}
   .hotel-cartao h3{font-family:"Baloo 2",sans-serif;font-size:23px;font-weight:700;margin:6px 0 6px;color:var(--ink)}
   .hotel-cartao p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-2)}
-  .hotel-cartao a{
-    display:inline-block;margin-top:13px;padding:8px 15px;border-radius:999px;
+  .hotel-cartao .acoes{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+  .hotel-cartao .acoes a{
+    display:inline-block;padding:8px 15px;border-radius:999px;
     background:var(--c-fill);color:var(--c-txt);text-decoration:none;
     font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
   }
+
+  /* fotos do quarto: miniaturas lado a lado, toque para ampliar */
+  .fotos{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:15px}
+  .fotos a{display:block;line-height:0;border-radius:14px;overflow:hidden;background:var(--linha);cursor:zoom-in}
+  .fotos img{width:100%;height:auto;display:block;aspect-ratio:1/1;object-fit:cover}
+
+  /* lupa: a foto aberta em cima de tudo */
+  .lupa{
+    position:fixed;inset:0;z-index:50;
+    display:flex;align-items:center;justify-content:center;padding:18px;
+    background:rgba(74,58,82,.84);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+    cursor:zoom-out;
+  }
+  .lupa[hidden]{display:none}
+  .lupa img{
+    max-width:100%;max-height:80vh;display:block;border-radius:20px;
+    box-shadow:0 20px 45px -14px rgba(70,50,80,.7);
+  }
+  .lupa .fechar{
+    position:absolute;top:16px;right:16px;width:40px;height:40px;
+    appearance:none;border:0;border-radius:50%;cursor:pointer;
+    background:var(--branco);color:var(--ink);
+    font-family:"Baloo 2",sans-serif;font-size:23px;font-weight:700;line-height:1;
+    box-shadow:var(--sombra);
+  }
+  .lupa .fechar:focus-visible{outline:2.5px solid var(--branco);outline-offset:3px}
+
+  /* numero da reserva */
+  .reserva{
+    display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+    margin-top:16px;padding-top:15px;border-top:3px dotted var(--linha);
+  }
+  .reserva .chave{display:flex;align-items:center;gap:9px;background:var(--c-fill);color:var(--c-txt);padding:8px 14px;border-radius:16px}
+  .reserva .chave small{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;line-height:1.2}
+  .reserva .chave strong{font-family:"Baloo 2",sans-serif;font-size:24px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+  .reserva .obs{flex:1;min-width:145px;font-size:12px;font-weight:600;line-height:1.5;color:var(--muted)}
 
   /* ---------- desfecho ---------- */
   footer{margin-top:34px;text-align:center}
@@ -228,6 +265,8 @@
     .trilho .parada:nth-child(4){animation-delay:.15s}
     .trilho .parada:nth-child(5){animation-delay:.2s}
     @keyframes sobe{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+    .lupa img{animation:cresce .24s cubic-bezier(.3,1.3,.6,1) both}
+    @keyframes cresce{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
   }
 </style>
 </head>
@@ -305,9 +344,33 @@
       <div class="parada cor-menta hotel">
         <div class="hotel-cartao">
           <div class="rotulo">Noite de 16 para 17</div>
-          <h3>Hotel Express</h3>
-          <p>Av. João Ponce de Arruda, 784 &mdash; Jardim Aeroporto<br>Várzea Grande &middot; MT</p>
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Express+Av.+Jo%C3%A3o+Ponce+de+Arruda+784+Jardim+Aeroporto+V%C3%A1rzea+Grande+MT" target="_blank" rel="noopener">Abrir no mapa</a>
+          <h3>Cerrados Park Hotel</h3>
+          <p>Av. Couto Magalhães, 755 &mdash; Centro Norte<br>Várzea Grande &middot; MT &middot; 78110&#8209;400</p>
+
+          <div class="fotos">
+            <a href="cama.jpg" target="_blank" rel="noopener">
+              <img src="cama.jpg" width="1024" height="683" loading="lazy" decoding="async" alt="Quarto do hotel com a cama arrumada">
+            </a>
+            <a href="banheiro.jpg" target="_blank" rel="noopener">
+              <img src="banheiro.jpg" width="1024" height="768" loading="lazy" decoding="async" alt="Banheiro com box de vidro e pia de granito">
+            </a>
+            <a href="tv.jpg" target="_blank" rel="noopener">
+              <img src="tv.jpg" width="1024" height="683" loading="lazy" decoding="async" alt="Bancada com televisão, frigobar e ar&#8209;condicionado">
+            </a>
+          </div>
+
+          <div class="reserva">
+            <div class="chave">
+              <small>Reserva</small>
+              <strong>192091</strong>
+            </div>
+            <div class="obs">Chegando, é só falar esse número na recepção.</div>
+          </div>
+
+          <div class="acoes">
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=Cerrados+Park+Hotel+Av.+Couto+Magalh%C3%A3es+755+Centro+Norte+V%C3%A1rzea+Grande+MT" target="_blank" rel="noopener">Abrir no mapa</a>
+            <a href="https://wa.me/5565999363116" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
         </div>
       </div>
 
@@ -316,7 +379,7 @@
           <div class="aviso-hora">03:00</div>
           <div class="aviso-txt">
             <em>Qui, 17 dez</em>
-            Sair do Hotel Express para o aeroporto Marechal Rondon. O hotel leva de graça &mdash; é só combinar o horário na recepção.
+            Sair do hotel para o aeroporto. O transporte é gratuito, basta pedir na recepção.
           </div>
         </div>
       </div>
@@ -501,6 +564,11 @@
   </footer>
 </div>
 
+<div class="lupa" id="lupa" role="dialog" aria-modal="true" aria-label="Foto do hotel" hidden>
+  <button class="fechar" id="lupa-fechar" type="button" aria-label="Fechar foto">&times;</button>
+  <img id="lupa-img" src="" alt="">
+</div>
+
 <script>
   (function(){
     var partida = new Date(2026, 11, 16, 4, 0, 0);
@@ -554,6 +622,37 @@
 
     abas.ida.addEventListener('click', function(){ mostrar('ida'); });
     abas.volta.addEventListener('click', function(){ mostrar('volta'); });
+
+    /* ---- fotos do hotel: tocar para ampliar ---- */
+    var lupa = document.getElementById('lupa');
+    var lupaImg = document.getElementById('lupa-img');
+    var lupaFechar = document.getElementById('lupa-fechar');
+    var fotos = document.querySelectorAll('.fotos a');
+    var fotoAberta = null;
+
+    function abrirFoto(link){
+      fotoAberta = link;
+      lupaImg.src = link.getAttribute('href');
+      lupaImg.alt = link.querySelector('img').alt;
+      lupa.hidden = false;
+      document.body.style.overflow = 'hidden';
+      lupaFechar.focus();
+    }
+
+    function fecharFoto(){
+      lupa.hidden = true;
+      lupaImg.removeAttribute('src');
+      document.body.style.overflow = '';
+      if (fotoAberta) { fotoAberta.focus(); fotoAberta = null; }
+    }
+
+    Array.prototype.forEach.call(fotos, function(link){
+      link.addEventListener('click', function(e){ e.preventDefault(); abrirFoto(link); });
+    });
+    lupa.addEventListener('click', fecharFoto);
+    document.addEventListener('keydown', function(e){
+      if (!lupa.hidden && (e.key === 'Escape' || e.key === 'Esc')) fecharFoto();
+    });
 
     /* depois que ela chegar em São José, a volta passa a ser a aba aberta */
     var chegada = new Date(2026, 11, 17, 12, 0, 0);
